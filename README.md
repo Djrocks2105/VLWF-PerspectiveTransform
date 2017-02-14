@@ -142,7 +142,7 @@ That is how to find resolution in *x* direction, but for finding resolution in *
 
 Lets say, we have a coordinate frame attached to the road, as shown on image below. It is easy to see that transformation of the coordinates from that coordinate frame the coordinate frame of the warped image coordinates have to be scaled and shifted. Scale in *x* direction corresponds to the number of pixel per meter in *x* direction. Same holds for *y*. In mathemathical form that can be written as:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=\begin{bmatrix}r_x & 0 & c_x \\ 0 & r_y & c_y\\ 0 & 0 & 1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
 
 | Road frame as seen by camera| Road frame on warped image |
@@ -157,11 +157,11 @@ The same thing can be calculated from the other side. Lets say that position and
 
 Since the road is planar, the *Z<sub>r</sub>=0*. Now we apply the perspective transform and get:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M} \left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\end{bmatrix}=\begin{bmatrix}r_x & 0 & c_x \\ 0 & r_y & c_y\\ 0 & 0 & 1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}"" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M}\left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}"" alt="{mathcode}">
 </p>
 Since it has to hold for every point we can conclude that:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?s\left[r_1\;r_2\;t\right]=(\mathbf{H}\mathbf{M})^{-1}\left\begin{bmatrix}r_x & 0 & c_x \\ 0 & r_y & c_y\\ 0 & 0 & 1\end{bmatrix}=[h_1\;h_2\;h_3]\begin{bmatrix}r_x & 0 & c_x \\ 0 & r_y & c_y\\ 0 & 0 & 1\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?s\left[r_1\;r_2\;t\right]=(\mathbf{H}\mathbf{M})^{-1}\left\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}=[h_1\;h_2\;h_3]\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}" alt="{mathcode}">
 </p>
 
 Where *h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub>* are columns of matrix (**HM**)*<sup>-1*. Since the length of vectors *r<sub>1</sub>* and *r<sub>2</sub>* is one, we can calculate scalar *s* and finaly *r<sub>y</sub>*:
