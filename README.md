@@ -67,7 +67,7 @@ The distortion coeficient and camera matrix are computed using `cv2.calibrateCam
 Before we move further on, lets just reflect on what the camera matrix is. The camera matrix encompases the pinhole camera model in it. It gives the relationship between the coordinates of the points relative to the camera in 3D space and postion of that point on the image in pixels. If *X*, *Y* and *Z* are coordinates of the point in 3D space, its position on image (*x* and *y*) in pixels is calculated using:
 
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}" alt="{https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}}">
 </p>
 
 where **M** is camera matrix and *s* is scalar different from zero. This equation will be used later on.
@@ -99,7 +99,7 @@ All detected lines are added to a list. The vanishing point is at the intersecti
 
 To find the minimum the cost function is diferentiated with respect to the **vp**. After some derivation the folowing is obtained:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\frac{\partial I}{\partial \mathbf{vp}}=0\implies\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right) \implies \mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)^{-1}\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right) " alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\frac{\partial I}{\partial\mathbf{vp}}=0\implies\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)\implies\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)^{-1}\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)" alt="{mathcode}">
 </p>
 
 Once the vanishing point is found, the top and bottom are defined manually and the trapezoid edges can be calculated. The corners of the trapezoid are used as a source points, while destination points are four corners of the new image. The size of the warped image is defined in file `settings.py`. After that, the matrix that defines the perspective transform is calculated using `cv2.getPerspectiveTransform()`. The procedure that inplements calculation of homography matrix of the perspective transform is implemented at the begining of the python script `find_perspective_transform.py` (lines 9 - 67). Images that illustrate the procedure follow. Please note that bottom points of the trapezoid are outside of the image, what is the reason for black triangles showin on the warped image.
