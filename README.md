@@ -157,7 +157,7 @@ The same thing can be calculated from the other side. Lets say that position and
 
 Since the road is planar, the *Z<sub>r</sub>=0*. Now we apply the perspective transform and get:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M}\left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}"" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M}\left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
 Since it has to hold for every point we can conclude that:
 <p align="center">
