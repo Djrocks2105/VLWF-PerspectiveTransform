@@ -152,7 +152,7 @@ Lets say, we have a coordinate frame attached to the road, as shown on image bel
 
 The same thing can be calculated from the other side. Lets say that position and of the road coordinate frame in camera coordinate frame is given with rotation matrix **R**=*[r<sub>1</sub> r<sub>2</sub> r<sub>3</sub>]* and translation vector *t*. One importan property that is going to be exploited is that matrix **R** is orthogonal, meaning that each of the rows *r<sub>1</sub>, r<sub>2</sub>, r<sub>3</sub>* has the length of 1. Now since we know that, the pixel on the image that corresponds to the point with coordinates *X<sub>r</sub>, Y<sub>r</sub>* and *Z<sub>r</sub>* is calculated by:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M} \left[r_1\;r_2\;r_3\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\\1\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\left[r_1\;r_2\;r_3\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
 
 Since the road is planar, the *Z<sub>r</sub>=0*. Now we apply the perspective transform and get:
