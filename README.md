@@ -94,7 +94,7 @@ Vanishing point is the place where all parallel lines meet, so to find it we wil
 
 All detected lines are added to a list. The vanishing point is at the intersection of all the lines from the list. Unfortunately, when more than two lines are present, unique intersecting point might not exist. To overcome that the vanishing point is the point whose total squared distance from all the lines is minimal, thus optimization procedure will be employed. Each line found by the hough lines can be represented by the point on it **p**<sub>i</sub> and an unit normal normal to it **n**<sub>i</sub>. Coordinate of the vanishing point is **vp**. So the total squared distance (and a cost function to be minimzed is):
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?I=\sum\left(\mathbf{n}_i^T(\mathbf{vp}-\mathbf{p}_i)\right)^2\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?I=\sum\left(\mathbf{n}_i^T(\mathbf{vp}-\mathbf{p}_i)\right)^2" alt="{mathcode}">
 </p>
 
 To find the minimum the cost function is diferentiated with respect to the **vp**. After some derivation the folowing is obtained:
@@ -140,7 +140,7 @@ To start, the images with the straight lines would be unwarped and color would b
 
 That is how to find resolution in *x* direction, but for finding resolution in *y* there is no such trick. Since nothing was estimated manually neither this will be. To find resolution in *y* direction we have to do some more math. 
 
-Lets say, we have a coordinate frame attached to the road, as shown on image below. It is easy to see that transformation of the coordinates from that coordinate frame the coordinate frame of the warped image coordinates have to be scaled and shifted. Scale in *x* direction corresponds to the number of pixel per meter in *x* direction. Same holds for *y*. In mathemathical form that can be written as:
+Lets say, we have a coordinate frame attached to the road, as shown on image below. It is easy to see that transformation of the coordinates represented in the coordinate frame of the road to the coordinate frame of the warped image, consists of scaling and shifted. Scale in *x* direction corresponds to the number of pixel per meter in *x* direction. Same holds for *y*. In mathemathical form that can be written as:
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
@@ -157,7 +157,7 @@ The same thing can be calculated from the other side. Lets say that position and
 
 Since the road is planar, the *Z<sub>r</sub>=0*. Now we apply the perspective transform and get:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M}\left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\mathbf{M}\left[r_1\;r_2\;t\right]\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}=\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}\begin{bmatrix}X_r\\Y_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
 Since it has to hold for every point we can conclude that:
 <p align="center">
