@@ -91,7 +91,7 @@ The vanishing point is the place where all parallel lines meet, so to find it we
 
 All detected lines are added to a list. The vanishing point is at the intersection of all the lines from the list. Unfortunately, when more than two lines are present, the unique intersecting point might not exist. To overcome that the vanishing point is the point whose total squared distance from all the lines is minimal, thus optimization procedure will be employed. Each line found by the Hough lines can be represented by the point on it **p**<sub>i</sub> and  unit normal to it **n**<sub>i</sub>. Coordinate of the vanishing point is **vp**. So the total squared distance (and a cost function to be minimized is):
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?I=\sum\left(\mathbf{n}_i^T(\mathbf{vp}-\mathbf{p}_i)\right)^2" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?I=\frac{1}{2}\sum\left(\mathbf{n}_i^T(\mathbf{vp}-\mathbf{p}_i)\right)^2" alt="{mathcode}">
 </p>
 
 To find the minimum the cost function is diferentiated with respect to the **vp**. After some derivation the folowing is obtained:
