@@ -251,7 +251,3 @@ The biggest issue by far for me were sudden changes of light conditions. In thos
  
 The averaging out of polynomial coefficients over the last couple of iterations is inappropriate. Effects of it can be in [harder_challenge_video](./output_videos/lane_harder_challenge_video.mp4) where lane computed by the code lags behind the lane on the image, especially in the case of sharp bends. Some better filtering technique has to be applied.
 
-
-
-
-
