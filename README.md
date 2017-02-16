@@ -21,10 +21,10 @@ The goals / steps of this project were the following:
 [image6]: ./readme_images/undistorted_vp.jpg "Undistorted image"
 [image7]: ./readme_images/edges_vp.jpg "Edge image"
 [image8]: ./readme_images/lines_vp.jpg "Image with lines"
-[image9]: ./readme_images/lines.png "Ilustration of line vanshing point calculation"
+[image9]: ./readme_images/lines.png "Illustration of line vanshing point calculation"
 [image10]:./readme_images/trapezoid.jpg "Image with trapezoid and vanishing point"
 [image11]:./readme_images/warped.jpg "Warped original image"
-[image12]:./readme_images/mask.jpg "Thresholded luminessence channel"
+[image12]:./readme_images/mask.jpg "Thresholded luminesence channel"
 [image13]:./readme_images/with_lines.jpg "Image with lanes"
 [image14]: ./readme_images/undistorted_cf.png "Warp Example"
 [image15]: ./readme_images/warped_cf.png "Fit Visual"
@@ -53,15 +53,15 @@ For this project, the calibration pipeline is implemented in function `calibrate
 
 The procedures start by preparing "object points", which will be the (x, y, z) coordinates of the chessboard corners in the world. Here I am assuming the chessboard is fixed on the (x, y) plane at z=0. Also,  I am assuming that the size of the chessboard pattern is the same for all images, so the object points will be the same for each calibration image.
 
-Then, the calibration images are sequentially loaded, converted to grayscale and chessboard pattern is looked for using `cv2.findChessboardCorners`. When the corners are found, their position gets refined further using `cv2.cornerSubPix`. That improves the accuracy of the calibration. Corner coordinates get appended to the list containing all the image points, while prepared "object points" gets appended to the list containing all the object points. 
+Then, the calibration images are sequentially loaded, converted to grayscale and chessboard pattern is looked for using `cv2.findChessboardCorners`. When the pattern is found, the positions of the corners get refined further to sub-pixel accuracy using `cv2.cornerSubPix`. That improves the accuracy of the calibration. Corner coordinates get appended to the list containing all the image points, while prepared "object points" gets appended to the list containing all the object points. 
 
-The distortion coefficient and camera matrix are computed using `cv2.calibrateCamera()` function, where image and object points are passed as inputs. It is important to check if the result is satisfactory, since calibration is a nonlinear numerical procedure, so it might yield suboptimal results. To do so calibration images are read once again and undistortion is applied to them. The undistorted images are shown in order to visually check if the distortion has been corrected. Once the data has been checked the parameters are is pickled saved to file. One sample of the input image, image with chessboard corners and the undistorted image is shown:
+The distortion coefficients and camera matrix are computed using `cv2.calibrateCamera()` function, where image and object points are passed as inputs. It is important to check if the result is satisfactory, since calibration is a nonlinear numerical procedure, so it might yield suboptimal results. To do so calibration images are read once again and undistortion is applied to them. The undistorted images are shown in order to visually check if the distortion has been corrected. Once the data has been checked the parameters are is pickled saved to file. One sample of the input image, image with chessboard corners and the undistorted image is shown:
 
 | Original image     | Chessboard corners | Undistorted image  |
 |--------------------|--------------------|--------------------|
 |![alt text][image1] |![alt text][image2] |![alt text][image3] |
 
-Before we move further on, lets just reflect on what the camera matrix is. The camera matrix encompases the pinhole camera model in it. It gives the relationship between the coordinates of the points relative to the camera in 3D space and postion of that point on the image in pixels. If *X*, *Y* and *Z* are coordinates of the point in 3D space, its position on image (*x* and *y*) in pixels is calculated using:
+Before we move further on, lets just reflect on what the camera matrix is. The camera matrix encompases the pinhole camera model in it. It gives the relationship between the coordinates of the points relative to the camera in 3D space and position of that point on the image in pixels. If *X*, *Y* and *Z* are coordinates of the point in 3D space, its position on image (*u* and *v*) in pixels is calculated using:
 
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}" alt="{https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\begin{bmatrix}X\\Y\\Z\end{bmatrix}}">
@@ -75,13 +75,13 @@ where **M** is camera matrix and *s* is scalar different from zero. This equatio
 
 
 ##Finding projective transformation
-Next step is to find the projective transform so the original images can be warped so that it looks like the camera is placed directly above the road. One approach is to hand tune the src and destination points. On the other hand, the script that does that can be created based on linear perspective geometry. Let's look at the projective geometry on the renaissance painting "Architectural Veduta" by Italian painter Francesco di Giorgio Martini. It is easy to note that all lines meet at a single point called vanishing point. The second thing to note is that the square floor tiles centered horizontally in the image, appear as trapezoids with horizontal top and bottom edges and side edges radiating from the vanishing point.  
+Next step is to find the projective transform so the original images can be warped so that it looks like the camera is placed directly above the road. OOne approach is to hand tune the source and destination points, which are required to compute the transformation matrix. On the other hand, the script that does that for us can be created based on linear perspective geometry. Let's look at the perspective geometry on the renaissance painting "Architectural Veduta" by Italian painter Francesco di Giorgio Martini. It is easy to note that all lines meet at a single point called vanishing point. The second thing to note is that the square floor tiles centered horizontally in the image, appear as trapezoids with horizontal top and bottom edges and side edges radiating from the vanishing point.  
 
 | Architectural Veduta          |
 |-------------------------------|
 |![Architectural Veduta][image5]|
 
-Our goal is to achieve exactly opposite, to transform a trapezoidal patch of the road in front of the car to a rectangular image of the road. To do so trapezoid needs to be defined as previously noted, horizontal top and bottom sides center with respect to a vanishing point, sides radiating from the vanishing point. Of course, to define that, the first task is to find the vanishing point. 
+Our goal is to achieve exactly opposite, to transform a trapezoidal patch of the road in front of the car to a rectangular image of the road. To do so, the trapezoid needs to be defined as previously noted, horizontal top and bottom centered with respect to a vanishing point, sides radiating from the vanishing point. Of course, to define that, the first task is to find the vanishing point. 
 
 The vanishing point is the place where all parallel lines meet, so to find it we will be using images with straight lines `straight_lines1.jpg`, `straight_lines2.jpg`. First, the images are undistorted, the Canny filter is applied and most prominent lines are identified using `cv2.HoughLinesP`. These images show how the pipeline works:
 
@@ -89,19 +89,19 @@ The vanishing point is the place where all parallel lines meet, so to find it we
 |--------------------|--------------------|--------------------|
 |![alt text][image6] |![alt text][image7] |![alt text][image8] |
 
-All detected lines are added to a list. The vanishing point is at the intersection of all the lines from the list. Unfortunately, when more than two lines are present, the unique intersecting point might not exist. To overcome that the vanishing point is the point whose total squared distance from all the lines is minimal, thus optimization procedure will be employed. Each line found by the Hough lines can be represented by the point on it **p**<sub>i</sub> and  unit normal to it **n**<sub>i</sub>. Coordinate of the vanishing point is **vp**. So the total squared distance (and a cost function to be minimized is):
+All detected lines are added to a list. The vanishing point is at the intersection of all the lines from the list. Unfortunately, when more than two lines are present, the unique intersecting point might not exist. To overcome that the vanishing point is selected as the point whose total squared distance from all the lines is minimal, thus optimization procedure will be employed. Each line found by the Hough lines can be represented by the point on it **p**<sub>i</sub> and  unit normal to it **n**<sub>i</sub>. Coordinate of the vanishing point is **vp**. So the total squared distance (and a cost function to be minimized is):
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?I=\frac{1}{2}\sum\left(\mathbf{n}_i^T(\mathbf{vp}-\mathbf{p}_i)\right)^2" alt="{mathcode}">
 </p>
 
-To find the minimum the cost function is diferentiated with respect to the **vp**. After some derivation the folowing is obtained:
+To find the minimum the cost function is differentiated with respect to the **vp**. After some derivation the following is obtained:
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\frac{\partial{I}}{\partial\mathbf{vp}}=0\implies\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)\implies\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)^{-1}\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)" alt="{mathcode}">
 </p>
 
 Once the vanishing point is found, the top and bottom are defined manually and the trapezoid edges can be calculated. The corners of the trapezoid are used as a source points, while destination points are four corners of the new image. The size of the warped image is defined in file `settings.py`. After that, the matrix that defines the perspective transform is calculated using `cv2.getPerspectiveTransform()`. The procedure that implements the calculation of homography matrix of the perspective transform is implemented at the beginning of the python script `find_perspective_transform.py` (lines 9 - 67). Images that illustrate the procedure follow. Please note that bottom points of the trapezoid are outside of the image, what is the reason for black triangles shown in the warped image.
 
-| Finding VP with multiple lines | Trapezoid and vanshing point|     Warped image   |
+| Finding VP with multiple lines |Trapezoid and vanishing point|     Warped image   |
 |--------------------------------|-----------------------------|--------------------|
 |![alt text][image9]             |![alt text][image10]         |![alt text][image11]|
 
@@ -114,9 +114,9 @@ The obtained source and destination points are:
 | 1811, 685     | 500, 600      |
 | -531, 685     | 0, 600        |
 
-The selected range is quite big, but that had to be done in order to be able to the harder challenge video. In that video, the bends are much sharper than on the highway and might easily veer outside of the trapezoid causing the whole pipeline to fail.
+The selected range is quite big, but that had to be done in order to be able to find the lanes on the harder challenge video. In that video, the bends are much sharper than on the highway and might easily veer outside of the trapezoid causing the whole pipeline to fail.
 
-Once again, lets just reflect on what is the matrix returned by the `cv2.getPerspectiveTransform()`. It tells how the perspective transformation is going to be performed and where the pixel from with the coordinates (*u*, *v*) is going to move after the transfomation. The destination of that pixel on the warped image would be the point with the coordinates (*u<sub>w</sub>*, *v<sub>w</sub>*). The new position is calculated using::
+Once again, lets just reflect on what is the matrix returned by the `cv2.getPerspectiveTransform()`. It tells how the perspective transformation is going to be performed and where the pixel from original image  with the coordinates (*u*, *v*) is going to move after the transformation. The destination of that pixel on the warped image would be the point with the coordinates (*u<sub>w</sub>*, *v<sub>w</sub>*). The new position is calculated using::
 
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u_w\\v_w\\1\end{bmatrix}=s\mathbf{H}\begin{bmatrix}u\\v\\1\end{bmatrix}" alt="{mathcode}">
@@ -126,9 +126,9 @@ where **H** is homography matrix returned as a result of `cv2.getPerspectiveTran
 
 
 ##Estimating pixel resolution
-Next important thing is to estimate resolution in pixels per meter of the warped image. It also can be done by hand, but as previously we'll create a script that does that for us. In the course materials, it was stated that width of the lane is no less than 12 feet. In order to estimate the resolution in pixels per meter, the images with the straight lines will be used. They will be unwarped and the distance between the lines will be measured. The lower of two distances will be assumed to be 12 feet or 3.6576 meters. 
+Next important step is to estimate resolution in pixels per meter of the warped image. It also can be done by hand, but as previously we'll create a script that does that for us. In the course materials, it was stated that width of the lane is no less than 12 feet. In order to estimate the resolution in pixels per meter, the images with the straight lines will be used. They will be unwarped and the distance between the lines will be measured. The lower of two distances will be assumed to be 12 feet or 3.6576 meters. 
 
-To start, the images with the straight lines would be unwarped and color would be converted to HLS space. To find the lanes the threshold would be applied to the luminescence component. Also, only some region of interest is taken into account. Since lines were straight heading towards the vanishing point, after the warping they will be vertical. The centroids of the blobs on left and right images would be calculated using image moments and function `cv2.moments()`. Since the lane lines are vertical the width of the lane in pixels is the difference between the *x* coordinates of two centroids. That allows for the calculation of the width in pixels and then resolution in *x* direction. This procedure is implemented between line 71 and 
+To start, the images with the straight lines would be unwarped and color would be converted to HLS space. To find the lanes the threshold would be applied to the luminesence component. Also, only some region of interest is taken into account. Since lines were straight heading towards the vanishing point, after the warping they will be vertical. The centroids of the blobs on left and right images would be calculated using image moments and function `cv2.moments()`. Since the lane lines are vertical the width of the lane in pixels is the difference between the *x* coordinates of two centroids. That allows for the calculation of the width in pixels and then resolution in *x* direction. This procedure is implemented between line 71 and 
 91 of the script `find_perspective_transform.py`. The images that illustrate the procedure are shown below.
 
 | Warped image with parallel lane lines| Thresholded luminesence  |Lane with lines identified|
@@ -147,7 +147,7 @@ Lets say, we have a coordinate frame attached to the road, as shown on image bel
 |![alt text][image14]         |![alt text][image15]        |
 
 
-The same thing can be calculated from the other side. Lets say that position and of the road coordinate frame in camera coordinate frame is given with rotation matrix **R**=*[r<sub>1</sub> r<sub>2</sub> r<sub>3</sub>]* and translation vector *t*. One importan property that is going to be exploited is that matrix **R** is orthogonal, meaning that each of the rows *r<sub>1</sub>, r<sub>2</sub>, r<sub>3</sub>* has the length of 1. Now since we know that, the pixel on the image that corresponds to the point with coordinates *X<sub>r</sub>, Y<sub>r</sub>* and *Z<sub>r</sub>* is calculated by:
+The same thing can be calculated from the other side. Lets say that position and of the road coordinate frame in camera coordinate frame is given with rotation matrix **R**=*[r<sub>1</sub> r<sub>2</sub> r<sub>3</sub>]* and translation vector *t*. One important property that is going to be exploited is that matrix **R** is orthogonal, meaning that each of the rows *r<sub>1</sub>, r<sub>2</sub>, r<sub>3</sub>* has the length of 1. Now since we know that, the pixel on the image that corresponds to the point with coordinates *X<sub>r</sub>, Y<sub>r</sub>* and *Z<sub>r</sub>* is calculated by:
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?\begin{bmatrix}u\\v\\1\end{bmatrix}=s\mathbf{M}\left[r_1\;r_2\;r_3\;t\right]\begin{bmatrix}X_r\\Y_r\\Z_r\\1\end{bmatrix}" alt="{mathcode}">
 </p>
@@ -161,7 +161,7 @@ Since it has to hold for every point we can conclude that:
 <img src="https://latex.codecogs.com/svg.latex?s\left[r_1\;r_2\;t\right]=(\mathbf{H}\mathbf{M})^{-1}\left\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}=[h_1\;h_2\;h_3]\begin{bmatrix}r_x&0&c_x\\0&r_y&c_y\\0&0&1\end{bmatrix}" alt="{mathcode}">
 </p>
 
-Where *h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub>* are columns of matrix (**HM**)*<sup>-1*. Since the length of vectors *r<sub>1</sub>* and *r<sub>2</sub>* is one, we can calculate scalar *s* and finaly *r<sub>y</sub>*:
+Where *h<sub>1</sub>, h<sub>2</sub>, h<sub>3</sub>* are columns of matrix (**HM**)*<sup>-1*. Since the length of vectors *r<sub>1</sub>* and *r<sub>2</sub>* is one, we can calculate scalar *s* and finally *r<sub>y</sub>*:
 <p align="center">
 <img src="https://latex.codecogs.com/svg.latex?r_y=r_x\frac{\left||h_1\right||}{\left||h_2\right||}" alt="{mathcode}">
 </p>
@@ -193,7 +193,7 @@ The image gets undistorted first, then the perspective transformation is applied
 |![alt text][image17]         |![alt text][image18]        |
 
 ####2. Finding bright or yellow areas
-To find the bright or yellow areas, the morphological TOP HAT operation is used. It isolates the areas brighter than their surroundings. This operation is used in order to make pipeline robust against the lighting changes. In selected case, the lightness of the road surface changes, but we'll see that it does not affect the tophat morphological operation. The edges were not used since they are extremely affected by the noise on the image, which makes them unsuitable for harder challenges. After applying TOP HAT operation, the image is thresholded using adaptive threshold which adds a bit more to the overall robustness. This part is implemented in lines 225 to 237. The resulting images are:
+To find the bright or yellow areas, the morphological TOP HAT operation is used. It isolates the areas brighter than their surroundings. This operation is used in order to make pipeline robust against the lighting changes. In selected case, the lightness of the road surface changes, but we'll see that it does not affect the tophat morphological operation. The edge detection not used since they are extremely affected by the noise on the image, which makes them unsuitable for harder challenges. After applying TOP HAT operation, the image is thresholded using adaptive threshold which adds a bit more to the overall robustness. This part is implemented in lines 225 to 237. The resulting images are:
 
 | Tophat on L channel from LAB| Tophat on L channel from HLS  |Tophat on B channel from LAB|
 |-----------------------------|-------------------------------|----------------------------|
@@ -210,7 +210,7 @@ Once the masks are calculated, logical *or* is applied between them in order to 
 |![alt text][image25]  |![alt text][image26]  |
 
 ####4. Finding the line in a mask and fitting polynomial
-When the mask is found, the search for the line begins. The initial point to start a search is somewhere 1.82 meters (6 feet). Under the assumption that lane is 12feet wide and that the car is in its middle, we would be spot on. Since that might not hold, the search is performed in its surroundings. The window at the bottom of the image with the highest number of points included found. After that, we go one layer up and perform the same search but right now, we start from the maximum from the layer below. The search is performed until the top of the image is reached, gradually eliminating points outside of the maximal region. Function that does this is `LaneLineFinder.find_lane_line()`. After the points have been cleared out, the polynomial fit is performed using `LaneLineFinder.fit_lane_line()`. In that procedures some statistics are calculated which help determine if the found line is good or not. The statistics include:
+When the mask is found, the search for the line begins. The initial point to start a search is somewhere 1.82 meters (6 feet). Under the assumption that lane is 12feet wide and that the car is in its middle, we would be spot on. Since that might not hold, the search is performed in its surroundings. The window at the bottom of the image with the highest number of points included found. After that, we go one layer up and perform the same search but right now, we start from the maximum from the layer below. The search is performed until the top of the image is reached, gradually eliminating points outside of the maximal region. Function that does this is `LaneLineFinder.find_lane_line()`. After the lane points have been isolated, the polynomial fit is performed using `LaneLineFinder.fit_lane_line()`. In that procedures some statistics are calculated which help determine if the found line is good or not. The statistics include:
  1. Number of points in the fit 
  2. Quality of the fit calculated using covariance matrix returned by `numpy.polyfit`
  3. Curvature of the road
@@ -247,7 +247,7 @@ Here are links to the videos:
 
 ##Discussion
 
-The biggest issue by far for me were sudden changes of light conditions. In those cases, the lines get either completely lost (going from bright to dark) or image gets filled with noise coming from the white spots. Although I have done the best I can to make pipeline robust against that kind of changes, they still can cause major problems, which is ident from [harder challenge video](./output_videos/lane_harder_challenge_video.mp4). More advanced filtering and brightness equalization techniques have to be examined. 
+The biggest issue by far for me were sudden changes of light conditions. In those cases, the lines get either completely lost (going from bright to dark) or image gets filled with noise coming from the white spots. Although I have done the best I can to make pipeline robust against that kind of changes, they still can cause major problems, which is evident from [harder challenge video](./output_videos/lane_harder_challenge_video.mp4). More advanced filtering and brightness equalization techniques have to be examined. 
  
 The averaging out of polynomial coefficients over the last couple of iterations is inappropriate. Effects of it can be in [harder_challenge_video](./output_videos/lane_harder_challenge_video.mp4) where lane computed by the code lags behind the lane on the image, especially in the case of sharp bends. Some better filtering technique has to be applied.
 
