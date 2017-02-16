@@ -96,7 +96,7 @@ All detected lines are added to a list. The vanishing point is at the intersecti
 
 To find the minimum the cost function is differentiated with respect to the **vp**. After some derivation the following is obtained:
 <p align="center">
-<img src="https://latex.codecogs.com/svg.latex?\frac{\partial{I}}{\partial\mathbf{vp}}=0\implies\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)\implies\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)^{-1}\left(\sum\mathbf{n}_i\mathbf{n}_i\mathbf{p}_i\right)" alt="{mathcode}">
+<img src="https://latex.codecogs.com/svg.latex?\frac{\partial{I}}{\partial\mathbf{vp}}=0\implies\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\mathbf{p}_i\right)\implies\mathbf{vp}=\left(\sum\mathbf{n}_i\mathbf{n}_i^T\right)^{-1}\left(\sum\mathbf{n}_i\mathbf{n}_i^T\mathbf{p}_i\right)" alt="{mathcode}">
 </p>
 
 Once the vanishing point is found, the top and bottom are defined manually and the trapezoid edges can be calculated. The corners of the trapezoid are used as a source points, while destination points are four corners of the new image. The size of the warped image is defined in file `settings.py`. After that, the matrix that defines the perspective transform is calculated using `cv2.getPerspectiveTransform()`. The procedure that implements the calculation of homography matrix of the perspective transform is implemented at the beginning of the python script `find_perspective_transform.py` (lines 9 - 67). Images that illustrate the procedure follow. Please note that bottom points of the trapezoid are outside of the image, what is the reason for black triangles shown in the warped image.
