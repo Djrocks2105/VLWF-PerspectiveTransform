@@ -7,3 +7,10 @@
 /.idea/workspace.xml
 /__pycache__/calibrate.cpython-35.pyc
 /__pycache__/settings.cpython-35.pyc
+test_images/
+*.pyc
+camera_cal/*
+output_images/*
+output_videos/*
+test_images/*
+*.mov
