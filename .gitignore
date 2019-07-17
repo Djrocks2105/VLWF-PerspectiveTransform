@@ -7,6 +7,7 @@
 /.idea/workspace.xml
 /__pycache__/calibrate.cpython-35.pyc
 /__pycache__/settings.cpython-35.pyc
+.idea
 test_images/
 *.pyc
 camera_cal/*
@@ -15,3 +16,5 @@ output_videos/*
 test_images/*
 *.mov
 lane_finder.py
+*.png
+*.mp4
